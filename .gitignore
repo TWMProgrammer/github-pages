@@ -1,0 +1,8 @@
+# Plaintext resume (NEVER commit to public repository)
+cv.html
+
+# Local build & keys
+*.key
+*.secret
+
+/gitignore

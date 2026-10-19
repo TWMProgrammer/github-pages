@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Application Penetration Testing: Consolidated Technical Reference & Research Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'dark',
+        themeVariables: {
+          darkMode: true,
+          background: '#070b14',
+          primaryColor: '#17223b',
+          primaryTextColor: '#e2e8f0',
+          primaryBorderColor: '#00d4ff',
+          lineColor: '#38bdf8',
+          secondaryColor: '#192540',
+          tertiaryColor: '#11192e',
+          fontFamily: 'Inter, sans-serif',
+          fontSize: '13px'
+        }
+      });
+    });
+  </script>
+  <style>
+    :root {
+      --bg-primary: #0a0f1d;
+      --bg-secondary: #11192e;
+      --bg-tertiary: #192540;
+      --bg-card: rgba(23, 34, 59, 0.75);
+      --border-color: rgba(66, 99, 150, 0.25);
+      --border-accent: rgba(0, 212, 255, 0.4);
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-bright: #ffffff;
+      --accent-cyan: #00d4ff;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --code-bg: #070b14;
+      --shadow-subtle: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.65;
+      padding: 0;
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px 80px 24px;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, rgba(16, 25, 48, 0.95), rgba(7, 11, 20, 0.95)), radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.12), transparent 40%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 48px 0;
+      margin-bottom: 40px;
+    }
+
+    .header-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 212, 255, 0.25);
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: var(--text-bright);
+      line-height: 1.25;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 900px;
+    }
+
+    .meta-bar {
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .meta-item strong {
+      color: var(--text-main);
+    }
+
+    /* Part Dividers */
+    .part-banner {
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.1), transparent);
+      border-left: 4px solid var(--accent-cyan);
+      padding: 16px 20px;
+      margin: 45px 0 25px 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .part-banner h2 {
+      font-size: 1.4rem;
+      color: var(--text-bright);
+      margin: 0;
+      border-bottom: none;
+      padding: 0;
+    }
+
+    .part-banner p {
+      margin: 4px 0 0 0;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Navigation & TOC */
+    .toc-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 40px;
+      backdrop-filter: blur(12px);
+    }
+
+    .toc-title {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      margin-bottom: 16px;
+    }
+
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 12px 24px;
+    }
+
+    .toc-link {
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 13.5px;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s ease;
+    }
+
+    .toc-link:hover {
+      color: var(--accent-cyan);
+    }
+
+    .toc-link::before {
+      content: "→";
+      color: var(--accent-cyan);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+
+    /* Typography */
+    h3.section-header {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin: 35px 0 16px 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h4 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      margin: 20px 0 10px 0;
+    }
+
+    p,
+    li {
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    ul,
+    ol {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Cards */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .card-header {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card.android .card-header {
+      color: #34d399;
+    }
+
+    .card.apple .card-header {
+      color: #60a5fa;
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      margin: 20px 0;
+      background: var(--bg-card);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    th {
+      background: var(--bg-tertiary);
+      color: var(--text-bright);
+      padding: 12px 16px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Alerts */
+    .alert {
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      display: flex;
+      gap: 14px;
+      border-left: 4px solid;
+    }
+
+    .alert-important {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: var(--accent-blue);
+      color: #bfdbfe;
+    }
+
+    .alert-warning {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: var(--accent-amber);
+      color: #fde68a;
+    }
+
+    .alert-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    /* Code */
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--accent-cyan);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #cbd5e1;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+
+    .checklist {
+      list-style: none;
+      padding: 0;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+    }
+
+    .checkbox {
+      margin-top: 3px;
+      accent-color: var(--accent-cyan);
+    }
+
+    .mermaid-container {
+      background: var(--code-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 16px 0;
+      overflow-x: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mermaid-container .mermaid {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .diagram-caption {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      font-style: italic;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 30px 0;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 60px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-content">
+      <div class="badge">Research Consolidation</div>
+      <h1>Mobile Application Penetration Testing Report</h1>
+      <p class="subtitle">Structured technical report organizing the core notes baseline first, followed by appended
+        specialized research tracks.</p>
+      <div class="meta-bar">
+        <div class="meta-item">Part I: <strong>Sections 1–5 (notes.md Baseline)</strong></div>
+        <div class="meta-item">Part II: <strong>Sections 6–10 (agent-research.md Appended Tracks)</strong></div>
+        <div class="meta-item">Format: <strong>Full Technical Consolidation</strong></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- TOC -->
+    <div class="toc-card">
+      <div class="toc-title">Document Navigation Index</div>
+      <div class="toc-grid">
+        <a href="#section-1" class="toc-link">1. Two Types of Devices: Android vs Apple</a>
+        <a href="#section-2" class="toc-link">2. Platform Shields (Enclaves, Boot, Sandbox)</a>
+        <a href="#section-3" class="toc-link">3. Extracting Binaries & System Firmware</a>
+        <a href="#section-4" class="toc-link">4. Privilege Escalation & Jailbreaks Evolution</a>
+        <a href="#section-5" class="toc-link">5. Root/Elevated Access Without Magisk/SuperSU</a>
+        <a href="#section-6" class="toc-link">6. Android API-Level Security Matrix (23-36+)</a>
+        <a href="#section-7" class="toc-link">7. Deep Links vs Android App Links</a>
+        <a href="#section-8" class="toc-link">8. Obfuscation, Commercial RASP & Packers</a>
+        <a href="#section-9" class="toc-link">9. Framework Analysis: Flutter & Dart AOT</a>
+        <a href="#section-10" class="toc-link">10. Consolidated Pentesting Checklist</a>
+      </div>
+    </div>
+
+    <!-- PART I BANNER -->
+    <div class="part-banner">
+      <h2>PART I: CORE ARCHITECTURAL BASELINE </h2>
+      <p>Sections 1 through 5 directly correspond to the foundational questions and structure from notes.md.</p>
+    </div>
+
+    <!-- SECTION 1 -->
+    <section id="section-1">
+      <h3 class="section-header">1. Two Types of Devices: Android vs. Apple iOS</h3>
+      <div class="grid-2">
+        <div class="card android">
+          <div class="card-header">
+            <span>Android Ecosystem</span>
+            <code>Open Mindset</code>
+          </div>
+          <p><strong>Philosophy & Foundation:</strong> Open mindset, originating as AOSP (Android Open Source Project)
+            written by Google. Adapted and modified by OEMs and SoC chipmakers (Qualcomm, MediaTek) with custom kernels,
+            drivers, and UI skins.</p>
+          <p><strong>Runtime Execution:</strong> Apps run through the Android Runtime (ART) as Dalvik Executable
+            (<code>.dex</code>) bytecode, utilizing profile-guided AOT and JIT compilation.</p>
+          <p><strong>Sideloading:</strong> Natively permits sideloading (users enable unknown sources per-app).</p>
+          <p><strong>Boot Chain:</strong> <code>BootROM</code> → <code>Secondary Bootloader (XBL/ABL)</code> →
+            <code>fastboot</code> & <code>Android Verified Boot (AVB)</code>. Bootloader unlocking is officially
+            supported by many OEMs via <code>fastboot flashing unlock</code>, wiping userdata.</p>
+          <p><strong>Composed Of:</strong></p>
+          <div style="text-align: center; margin: 16px 0;">
+            <img src="https://source.android.com/static/images/android-stack.png"
+              alt="Android Software Stack Architecture Diagram"
+              style="max-width: 100%; height: auto; border-radius: 8px; background: rgba(255, 255, 255, 0.95); padding: 12px; box-sizing: border-box; border: 1px solid var(--border-color);" />
+          </div>
+          <ul>
+            <li><strong>Linux Kernel:</strong> Custom LTS kernel, unified under GKI (Generic Kernel Image) since Android
+              12, with vendor modules.</li>
+            <li><strong>System Libraries & Daemons:</strong> <code>init</code>, <code>ueventd</code>,
+              <code>servicemanager</code> interfacing with <code>/dev</code>, <code>/sys</code>, <code>/proc</code>;
+              Bionic libc and BoringSSL.</li>
+            <li><strong>HAL:</strong> Standardized AIDL/HIDL interfaces decoupling framework from hardware drivers.</li>
+            <li><strong>ART:</strong> Executes <code>.dex</code> bytecode.</li>
+            <li><strong>System Services & Framework:</strong> Coordinated by <code>system_server</code>, exposing
+              <code>android.*</code> APIs.</li>
+            <li><strong>Android API:</strong> Public SDK defining available platform functionality per API level.</li>
+          </ul>
+        </div>
+
+        <div class="card apple">
+          <div class="card-header">
+            <span>Apple iOS Ecosystem</span>
+            <code>Proprietary / Closed</code>
+          </div>
+          <p><strong>Philosophy & Foundation:</strong> Closed-source, proprietary ecosystem. Vertically integrated:
+            Apple designs silicon (A/M-series SoCs), Secure Enclave, firmware, OS, and hardware.</p>
+          <p><strong>Platform Lockdown:</strong> Officially locked down. The EU Digital Markets Act (DMA) introduces
+            limited EU-only alternative marketplaces and notarized sideloading.</p>
+          <p><strong>Boot Chain:</strong> <code>SecureROM</code> (hardware ROM) → <code>LLB</code> / <code>iBoot</code>
+            → <code>XNU Kernel</code>. Locked down by hardware efuses, Apple Root CA, and personalized cryptographic
+            validation against Apple TSS signing servers (SHSH blobs). Legitimate bootloader unlocking is impossible.
+          </p>
+          <p><strong>Sealed Filesystem:</strong> Signed System Volume (SSV) with APFS snapshots prevents modifications
+            to the root filesystem.</p>
+          <p><strong>Composed Of:</strong></p>
+          <div style="text-align: center; margin: 16px 0;">
+            <svg viewBox="0 0 540 520" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 100%; height: auto; border-radius: 8px; box-sizing: border-box;">
+              <defs>
+                <linearGradient id="grad-cocoa" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#38bdf8" />
+                  <stop offset="100%" stop-color="#0284c7" />
+                </linearGradient>
+                <linearGradient id="grad-media" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#818cf8" />
+                  <stop offset="100%" stop-color="#4f46e5" />
+                </linearGradient>
+                <linearGradient id="grad-services" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#a855f7" />
+                  <stop offset="100%" stop-color="#7e22ce" />
+                </linearGradient>
+                <linearGradient id="grad-coreos" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ec4899" />
+                  <stop offset="100%" stop-color="#be185d" />
+                </linearGradient>
+                <linearGradient id="grad-darwin" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#f97316" />
+                  <stop offset="100%" stop-color="#c2410c" />
+                </linearGradient>
+                <linearGradient id="grad-hardware" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#10b981" />
+                  <stop offset="100%" stop-color="#047857" />
+                </linearGradient>
+                <filter id="layer-shadow" x="-5%" y="-10%" width="110%" height="135%">
+                  <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.35" />
+                </filter>
+              </defs>
+
+              <g transform="translate(20, 20)" filter="url(#layer-shadow)">
+                <rect x="0" y="0" width="500" height="68" rx="10" fill="url(#grad-cocoa)" />
+                <text x="24" y="28" font-size="14" font-weight="700" fill="#ffffff" letter-spacing="0.5">COCOA TOUCH LAYER</text>
+                <text x="24" y="48" font-size="11.5" fill="rgba(255,255,255,0.9)" font-family="monospace">UIKit • SwiftUI • MapKit • LocalAuthentication • UserNotifications</text>
+                <circle cx="475" cy="34" r="14" fill="rgba(255,255,255,0.2)" />
+                <text x="475" y="38" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">1</text>
+              </g>
+
+              <g transform="translate(20, 102)" filter="url(#layer-shadow)">
+                <rect x="0" y="0" width="500" height="68" rx="10" fill="url(#grad-media)" />
+                <text x="24" y="28" font-size="14" font-weight="700" fill="#ffffff" letter-spacing="0.5">MEDIA LAYER</text>
+                <text x="24" y="48" font-size="11.5" fill="rgba(255,255,255,0.9)" font-family="monospace">Metal • Core Graphics • Core Animation • AVFoundation • Core Audio</text>
+                <circle cx="475" cy="34" r="14" fill="rgba(255,255,255,0.2)" />
+                <text x="475" y="38" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">2</text>
+              </g>
+
+              <g transform="translate(20, 184)" filter="url(#layer-shadow)">
+                <rect x="0" y="0" width="500" height="68" rx="10" fill="url(#grad-services)" />
+                <text x="24" y="28" font-size="14" font-weight="700" fill="#ffffff" letter-spacing="0.5">CORE SERVICES LAYER</text>
+                <text x="24" y="48" font-size="11.5" fill="rgba(255,255,255,0.9)" font-family="monospace">Foundation • Core Data • CloudKit • Core Location • Network.framework</text>
+                <circle cx="475" cy="34" r="14" fill="rgba(255,255,255,0.2)" />
+                <text x="475" y="38" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">3</text>
+              </g>
+
+              <g transform="translate(20, 266)" filter="url(#layer-shadow)">
+                <rect x="0" y="0" width="500" height="68" rx="10" fill="url(#grad-coreos)" />
+                <text x="24" y="28" font-size="14" font-weight="700" fill="#ffffff" letter-spacing="0.5">CORE OS LAYER</text>
+                <text x="24" y="48" font-size="11.5" fill="rgba(255,255,255,0.9)" font-family="monospace">Security.framework • libSystem • Accelerate • Core Bluetooth • LocalAuth</text>
+                <circle cx="475" cy="34" r="14" fill="rgba(255,255,255,0.2)" />
+                <text x="475" y="38" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">4</text>
+              </g>
+
+              <g transform="translate(20, 348)" filter="url(#layer-shadow)">
+                <rect x="0" y="0" width="500" height="68" rx="10" fill="url(#grad-darwin)" />
+                <text x="24" y="28" font-size="14" font-weight="700" fill="#ffffff" letter-spacing="0.5">DARWIN (XNU HYBRID KERNEL)</text>
+                <text x="24" y="48" font-size="11.5" fill="rgba(255,255,255,0.9)" font-family="monospace">Mach (IPC, Tasks, VM) • BSD (POSIX, Net, MAC) • I/O Kit • Seatbelt Sandbox</text>
+                <circle cx="475" cy="34" r="14" fill="rgba(255,255,255,0.2)" />
+                <text x="475" y="38" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">5</text>
+              </g>
+
+              <g transform="translate(20, 430)" filter="url(#layer-shadow)">
+                <rect x="0" y="0" width="500" height="68" rx="10" fill="url(#grad-hardware)" />
+                <text x="24" y="28" font-size="14" font-weight="700" fill="#ffffff" letter-spacing="0.5">SILICON & HARDWARE SECURITY</text>
+                <text x="24" y="48" font-size="11.5" fill="rgba(255,255,255,0.9)" font-family="monospace">Apple Silicon (A/M SoCs) • Secure Enclave (SEP) • Boot ROM • Crypto Engine</text>
+                <circle cx="475" cy="34" r="14" fill="rgba(255,255,255,0.2)" />
+                <text x="475" y="38" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">6</text>
+              </g>
+            </svg>
+          </div>
+          <ul>
+            <li><strong>Cocoa Touch:</strong> Key frameworks (<code>UIKit</code>, <code>SwiftUI</code>) for UI presentation, touch event loops, and app lifecycle.</li>
+            <li><strong>Media Layer:</strong> Hardware-accelerated graphics (<code>Metal</code>, <code>Core Animation</code>) and audio/video pipelines (<code>AVFoundation</code>).</li>
+            <li><strong>Core Services:</strong> Foundational non-UI services including <code>Foundation</code>, <code>Core Data</code>, <code>CloudKit</code>, and <code>Network.framework</code>.</li>
+            <li><strong>Core OS Layer:</strong> Low-level hardware interfacing, <code>Security.framework</code>, <code>libSystem</code> (POSIX), and local hardware authentication.</li>
+            <li><strong>Darwin (XNU Kernel):</strong> Hybrid kernel combining Mach (IPC, virtual memory, threads) and BSD (networking, VFS, POSIX permissions, MAC/Seatbelt sandbox).</li>
+            <li><strong>Hardware & Secure Enclave:</strong> Apple Silicon hardware root of trust, Secure Enclave Processor (SEP), and hardware AES cryptographic engines.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section id="section-2">
+      <h3 class="section-header">2. Platform Shields & Hardware Defense Systems</h3>
+
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-header">
+          <span>Hardware Root of Trust & Verified Boot Architecture</span>
+          <code>Comparison Workflow</code>
+        </div>
+        <div class="mermaid-container">
+          <pre class="mermaid">
+flowchart TB
+  subgraph ANDROID["Android Hardware & Boot Chain"]
+    direction TB
+    A1["Boot ROM (SoC Primary RoT)"] --> A2["Secondary Bootloader (XBL / ABL)"]
+    A2 --> A3["Android Verified Boot (AVB 2.0)"]
+    A3 --> A4["dm-verity RootFS / Partitions (system, vendor)"]
+    A4 --> A5["Kernel & Init (SELinux Enforcing)"]
+    A5 --> A6["Android Userspace (UID DAC + App Sandbox)"]
+    A_HW["StrongBox / Titan M2 / Knox Vault"] -.->|"Attestation & Key Isolation"| A3
+    A_HW -.->|"Hardware Keystore"| A6
+  end
+
+  subgraph IOS["Apple iOS Hardware & Boot Chain"]
+    direction TB
+    I1["Boot ROM / SecureROM (Hardwired Apple RoT)"] --> I2["Low-Level Bootloader (LLB)"]
+    I2 --> I3["iBoot (Cryptographic Stage Validation)"]
+    I3 --> I4["Darwin Kernel / XNU (AMFI & Code Signing)"]
+    I4 --> I5["Signed System Volume (SSV APFS Snapshot)"]
+    I5 --> I6["Sandboxed App Container (Seatbelt MAC / Entitlements)"]
+    I_SEP["Secure Enclave Processor (SEP / sepOS)"] -.->|"Hardware Rooted UID & Anti-Rollback"| I2
+    I_SEP -.->|"Biometrics & Hardware Keychain"| I6
+  end
+
+  classDef greenCard fill:#112a20,stroke:#10b981,stroke-width:1.5px,color:#e2e8f0;
+  classDef blueCard fill:#162444,stroke:#00d4ff,stroke-width:1.5px,color:#e2e8f0;
+  classDef hwCard fill:#231942,stroke:#a855f7,stroke-width:1.5px,color:#f8fafc;
+
+  class A1,A2,A3,A4,A5,A6 greenCard;
+  class I1,I2,I3,I4,I5,I6 blueCard;
+  class A_HW,I_SEP hwCard;
+          </pre>
+          <div class="diagram-caption">Figure 2.1: Parallel verification chains: Android Hardware Attestation & AVB vs. Apple Secure Enclave & SSV Chain of Trust</div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Shield Category</th>
+              <th>Android Platform Defense</th>
+              <th>Apple iOS Platform Defense</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Hardware Root of Trust & Secure Enclaves</strong></td>
+              <td>Hardware-backed security modules (StrongBox / Titan M2 for Pixels, Knox Vault for Samsung) managing
+                Keystore keys, hardware attestation, and biometric auth.</td>
+              <td><strong>Secure Enclave Processor (SEP)</strong>: Isolated ARM co-processor with its own secure OS
+                (<code>sepOS</code>) handling biometric data (Touch ID/Face ID) and Keychain hardware keys.</td>
+            </tr>
+            <tr>
+              <td><strong>Verified Boot and Disk Integrity</strong></td>
+              <td>Android Verified Boot (AVB 2.0) with <code>dm-verity</code> ensuring cryptographic integrity of
+                read-only partitions (<code>system</code>, <code>vendor</code>, <code>product</code>).</td>
+              <td>Hardware-rooted Secure Boot validating cryptographic signatures at every boot stage; Signed System
+                Volume (SSV) APFS snapshots prevent modifications to the root filesystem.</td>
+            </tr>
+            <tr>
+              <td><strong>Sandboxing and Isolation</strong></td>
+              <td>Multi-user Linux DAC (distinct UID/GID per app, isolating <code>/data/data/&lt;pkg&gt;</code>) +
+                SELinux (MAC) strictly enforced in <code>untrusted_app</code> domains + <code>seccomp-bpf</code> syscall
+                filtering.</td>
+              <td>App Sandbox (<strong>Seatbelt</strong> framework) driven by MAC policies (<code>sandbox.kext</code>),
+                strictly confining apps to their container and regulating IPC/hardware via Apple-signed entitlements.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Code Signing & Runtime Protection</strong></td>
+              <td>APK v2/v3/v4 signature schemes; Play Integrity API verifies bootloader status and app authenticity;
+                Scoped Storage limits filesystem access.</td>
+              <td>Mandatory runtime code signing enforced by AMFI (Apple Mobile File Integrity); memory protections
+                include PAC, PPL, and SPTM/TXM on newest chips.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section id="section-3">
+      <h3 class="section-header">3. Extracting Binaries and System Firmware</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Target Category</th>
+              <th>Android Extraction Commands</th>
+              <th>Apple iOS Extraction Commands</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>System Binaries & Libraries</strong></td>
+              <td>Pull directly via
+                ADB:<br><code>adb pull /system/bin/...</code><br><code>adb pull /system/lib64/...</code></td>
+              <td>Download official IPSW from IPSW.me, unpack (unzip) DMG disk images; use <code>ipsw</code> CLI tool to
+                decrypt kernels/binaries.</td>
+            </tr>
+            <tr>
+              <td><strong>Installed Applications</strong></td>
+              <td>1. Locate path: <code>adb shell pm path &lt;pkg&gt;</code><br>2. Pull package:
+                <code>adb pull /data/app/.../base.apk</code> (for modern App Bundles, pull all <code>split_*.apk</code>
+                files).</td>
+              <td>1. Download encrypted IPA directly via <code>ipatool</code> using Apple ID credentials.<br>2. Decrypt
+                binary via live memory dump on jailbroken device/Corellium using <code>frida-ios-dump</code> (clearing
+                <code>cryptid</code> 1 → 0).</td>
+            </tr>
+            <tr>
+              <td><strong>Firmware Binaries</strong></td>
+              <td>Extract <code>payload.bin</code> from full OTA ZIPs using tools like <code>payload_dumper</code> or
+                <code>ota_extractor</code>.</td>
+              <td>Download directly from IPSW.me and unpack DMG images.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="alert alert-important">
+        <div>
+          <span class="alert-title">Critical IPA Acquisition Note</span>
+          Since May 21, 2021, Apple Configurator 2 has discontinued the ability to download IPAs. Production App Store
+          IPAs require dumping decrypted memory from an active device using <code>frida-ios-dump</code>, or obtaining an
+          unencrypted development IPA directly from the client.
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section id="section-4">
+      <h3 class="section-header">4. Privilege Escalation & Jailbreaking Evolution</h3>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">Android Root Evolution</div>
+          <p><strong>Pre-4.4:</strong> Direct userspace & DAC bugs (e.g., <code>rageagainstthecage</code>,
+            <code>zergRush</code> taking over root-owned daemons like <code>adbd</code> or <code>vold</code>).</p>
+          <p><strong>4.4 – 9:</strong> SELinux enforcement (introduced in 4.4 permissive, 5.0 enforcing) closed
+            userspace DAC attacks, forcing privilege escalation into the Linux kernel (e.g., <code>towelroot</code>
+            CVE-2014-3153). Root solutions transitioned from modifying <code>/system</code> (SuperSU) to systemless boot
+            partition patching (<strong>Magisk</strong> hooking <code>init</code> and dynamically modifying SELinux
+            policy rules).</p>
+          <p><strong>10+:</strong> Generic Kernel Image (GKI) standardized the kernel across OEMs. Enabled kernel-level
+            root solutions: <strong>KernelSU</strong> (integrated into GKI kernel source) and <strong>APatch</strong>
+            (patching kernel via KernelPatch without userspace ramdisk modification).</p>
+          <div class="mermaid-container" style="margin-top: 14px; padding: 12px;">
+            <pre class="mermaid">
+flowchart TD
+  A_ENTRY["Initial Foothold<br/><i>(Untrusted App DAC / ADB Shell / WebKit)</i>"] --> A_SB["SELinux Policy Barrier<br/><i>(untrusted_app domain containment)</i>"]
+  A_SB --> A_EXP["Kernel Exploit Stage<br/><i>(LPE via UAF / DirtyPipe / Binder / Netlink)</i>"]
+  A_EXP --> A_OVERWRITE["Kernel Memory Write<br/><i>(Overwrite struct cred: uid=0, gid=0)</i>"]
+  A_OVERWRITE --> A_SELINUX["SELinux Neutralization<br/><i>(Disable enforcing / Patch avc_has_perm)</i>"]
+  A_SELINUX --> A_MODERN["Root Persistence / Access<br/><i>(GKI prctl syscall hook / KernelSU / Magisk init)</i>"]
+
+  classDef aStep fill:#0f241a,stroke:#10b981,stroke-width:1.5px,color:#e2e8f0;
+  classDef aBarrier fill:#381622,stroke:#f43f5e,stroke-width:1.5px,color:#fecdd3;
+  class A_ENTRY,A_EXP,A_OVERWRITE,A_MODERN aStep;
+  class A_SB,A_SELINUX aBarrier;
+            </pre>
+            <div class="diagram-caption">Figure 4.1: Modern Privilege Escalation Flow (Android 5.0+ SELinux & 10+ GKI Era)</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Apple iOS Jailbreak Evolution</div>
+          <p><strong>Pre-9:</strong> 1-click web/browser jailbreaks (e.g., JailbreakMe) utilizing WebKit memory
+            corruption bugs chained with kernel vulnerabilities to execute unsigned code.</p>
+          <p><strong>10 – 14:</strong> Kernel heap corruption/UAF exploits providing <code>tfp0</code> (task_for_pid 0)
+            enabling semi-tethered jailbreaks (unc0ver, Taurine). Unpatchable BootROM vulnerability
+            (<strong>checkm8</strong> on A5–A11 chips) enabled tethered jailbreaks (checkra1n, palera1n) regardless of
+            iOS version.</p>
+          <p><strong>15+:</strong> Hardware mitigation layers introduced: PAC, PPL, and SPTM/TXM. Modern exploitation
+            relies on <strong>rootless jailbreaks</strong> (leaving SSV root filesystem untouched, staging in
+            <code>/var/jb</code> like <strong>Dopamine</strong>) and signature verification bypasses (e.g., CoreTrust
+            bugs enabling <strong>TrollStore</strong>).</p>
+          <div class="mermaid-container" style="margin-top: 14px; padding: 12px;">
+            <pre class="mermaid">
+flowchart TD
+  I_ENTRY["Sandboxed Process<br/><i>(App Container / WebKit Content Process)</i>"] --> I_SB["Seatbelt / sandbox.kext<br/><i>(Escaped via mach message / IOKit user client)</i>"]
+  I_SB --> I_KERN["Kernel Exploit Stage<br/><i>(Kernel R/W primitive / tfp0 / PhysPuppet)</i>"]
+  I_KERN --> I_MITIG["Hardware Mitigation Bypass<br/><i>(PAC signing forge + PPL bypass primitive)</i>"]
+  I_MITIG --> I_AMFI["Code Signing & Trust Bypass<br/><i>(CoreTrust bug / AMFI hook / launchd injection)</i>"]
+  I_AMFI --> I_ROOTLESS["Rootless Payload Execution<br/><i>(Unmodified SSV, stages payload in /var/jb)</i>"]
+
+  classDef iStep fill:#162444,stroke:#00d4ff,stroke-width:1.5px,color:#e2e8f0;
+  classDef iBarrier fill:#381622,stroke:#f43f5e,stroke-width:1.5px,color:#fecdd3;
+  class I_ENTRY,I_KERN,I_ROOTLESS iStep;
+  class I_SB,I_MITIG,I_AMFI iBarrier;
+            </pre>
+            <div class="diagram-caption">Figure 4.2: Modern Exploit Chain & Rootless Jailbreak Architecture (iOS 15+ / Post-SSV Era)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5 -->
+    <section id="section-5">
+      <h3 class="section-header">5. Root & Elevated Access Without Magisk/SuperSU</h3>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">1. Modern Kernel-Level Solutions (Unlocked Bootloader)</div>
+          <ul>
+            <li><strong>KernelSU:</strong> Integrated directly into the GKI Linux kernel; grants root via kernel syscall
+              interception (<code>prctl</code>/<code>su</code>) without touching userspace <code>init</code>.</li>
+            <li><strong>APatch:</strong> Injects hooks into the boot image kernel using KernelPatch without modifying
+              initramfs or triggering Magisk-specific detection.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-header">2. OEM-Authorized / Built-in Methods (No Root Tools)</div>
+          <ul>
+            <li><strong>AOSP Userdebug / Engineering Builds:</strong> Building AOSP target with <code>userdebug</code>
+              or <code>eng</code> gives native root access via <code>adb root</code> out of the box with <code>su</code>
+              included.</li>
+            <li><strong>Official Emulators (Android Studio AVD):</strong> Use system images labeled <strong>"Google
+                APIs"</strong> (instead of "Google Play") which natively support running <code>adb root</code> directly.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">3. Testing Without Unlocking Bootloader / Keeping OEM Locked (Bypassing Root
+          Requirement)</div>
+        <ul>
+          <li><strong>Frida Gadget Repackaging:</strong> Inject <code>libfrida-gadget.so</code> into the target APK
+            using <code>objection patchapk</code> or <code>apktool</code>. Allows full dynamic instrumentation, SSL
+            pinning bypass, and memory inspection on a 100% stock, locked device without requiring root.</li>
+          <li><strong>Shizuku / Wireless ADB:</strong> Grants elevated <code>uid 2000 (shell)</code> privileges via
+            ADB/WiFi debugging APIs to interact with app components and data without needing full <code>uid 0</code>
+            root.</li>
+          <li><strong>LPE 1-day / 0-day exploits:</strong> Gaining transient in-memory root privileges via an unpatched
+            kernel vulnerability without persistently modifying firmware partitions.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PART II BANNER -->
+    <div class="part-banner">
+      <h2>PART II: DEEP PENTEST RESEARCH TRACKS</h2>
+      <p>Sections 6 through 10 append the deep technical briefings, verified command sets, and frameworks from
+        agent-research.md.</p>
+    </div>
+
+    <!-- SECTION 6 -->
+    <section id="section-6">
+      <h3 class="section-header">6. Android API-Level Security Evolution Matrix (API 23 → API 36+)</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Platform</th>
+              <th>API</th>
+              <th>Platform Security Baseline Changes</th>
+              <th>Pentesting & Retesting Impact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Android 6.0</strong></td>
+              <td>23</td>
+              <td>Runtime permissions; MAC address randomization.</td>
+              <td>Last version to trust user CAs by default; acts as install floor on Android 14+.</td>
+            </tr>
+            <tr>
+              <td><strong>Android 7.0</strong></td>
+              <td>24</td>
+              <td><strong>Network Security Configuration:</strong> User CAs untrusted by default.</td>
+              <td>Burp/mitmproxy proxy setup fails without moving CA to system store or APK patching.</td>
+            </tr>
+            <tr>
+              <td><strong>Android 9.0</strong></td>
+              <td>28</td>
+              <td><code>cleartextTrafficPermitted</code> defaults to <code>false</code>.</td>
+              <td>Cleartext HTTP blocked; proxy listeners fail unless manifest explicitly allows cleartext.</td>
+            </tr>
+            <tr>
+              <td><strong>Android 10</strong></td>
+              <td>29</td>
+              <td>Scoped storage; <code>/proc/net</code> blocked; non-resettable IDs (IMEI) restricted.</td>
+              <td>Apps cannot read system networking data or serials; clipboard access requires active focus.</td>
+            </tr>
+            <tr>
+              <td><strong>Android 11</strong></td>
+              <td>30</td>
+              <td>Enforced Scoped Storage; <strong>Package Visibility Filtering</strong>.</td>
+              <td><code>/sdcard/Android/data/</code> sealed; enumeration APIs return filtered results without
+                <code>&lt;queries&gt;</code>.</td>
+            </tr>
+            <tr>
+              <td><strong>Android 12</strong></td>
+              <td>31/32</td>
+              <td><code>android:exported</code> mandatory; Web Intent Resolution gating.</td>
+              <td>Manifests missing exported flags fail to install; generic HTTP links resolve to browser by default.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Android 13</strong></td>
+              <td>33</td>
+              <td>Granular media permissions (<code>READ_MEDIA_IMAGES</code>, etc.).</td>
+              <td>Legacy <code>READ_EXTERNAL_STORAGE</code> is inert; test granular access controls.</td>
+            </tr>
+            <tr>
+              <td><strong>Android 14</strong></td>
+              <td>34</td>
+              <td><strong>Install floor = API 23</strong>; Dynamic Code Loading must be read-only.</td>
+              <td>Legacy APKs blocked without <code>adb install --bypass-low-target-sdk-block</code>; dynamic DEX
+                loading must be read-only.</td>
+            </tr>
+            <tr>
+              <td><strong>Android 15</strong></td>
+              <td>35</td>
+              <td><strong>16 KB memory page sizes</strong>; Background Activity Launch (BAL) lockdown.</td>
+              <td>Frida gadgets and native libraries must be 16 KB ELF-aligned (<code>align 2**14</code>); task
+                hijacking blocked.</td>
+            </tr>
+            <tr>
+              <td><strong>Android 16</strong></td>
+              <td>36</td>
+              <td>16 KB compatibility mode; Intent redirection protection; Safer Intents.</td>
+              <td>4 KB-aligned gadgets trigger warning dialogs; explicit intents must match component intent filters.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Android 16+</strong></td>
+              <td>36</td>
+              <td><strong>Advanced Protection Mode (AAPM)</strong>.</td>
+              <td>Blocks app sideloading (disables <code>adb install</code>), enforces forensic logging, and restricts
+                network protocols.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 7 -->
+    <section id="section-7">
+      <h3 class="section-header">7. Deep Links vs. Android App Links & Universal Links</h3>
+
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-header">
+          <span>URI Resolution & Domain Verification Flow</span>
+          <code>Execution Flowchart</code>
+        </div>
+        <div class="mermaid-container">
+          <pre class="mermaid">
+flowchart TD
+  START(["User clicks URI / External Intent Trigger"]) --> CHECK{"URI Scheme Type?"}
+
+  CHECK -->|"Custom Scheme (myapp://path)"| CUSTOM["Custom Scheme Deep Link"]
+  CHECK -->|"HTTPS Scheme (https://example.com/path)"| HTTPS["HTTP/HTTPS Web Intent"]
+
+  CUSTOM --> OS_RESOLVE["OS Package Manager Intent Resolver"]
+  OS_RESOLVE --> CONFLICT{"Multiple Apps Registered?"}
+  CONFLICT -->|"Yes (Unverified)"| DISAMBIG["Disambiguation Dialog ('Open with...')<br/><b>Susceptible to Intent Hijacking</b>"]
+  CONFLICT -->|"No"| DIRECT_APP["Opens Target App Component Directly"]
+
+  HTTPS --> VERIFY{"android:autoVerify='true' / Universal Link?"}
+  VERIFY -->|"No"| BROWSER["Opens Default Web Browser (Android 12+)"]
+  VERIFY -->|"Yes"| CHECK_ASSET["OS Validates Domain Ownership<br/><i>/.well-known/assetlinks.json (Android)</i><br/><i>apple-app-site-association (iOS)</i>"]
+  
+  CHECK_ASSET --> MATCH{"Cert Fingerprint Matches?"}
+  MATCH -->|"Passed"| VERIFIED_APP["Directly Launches Target App (Bypasses Browser/Dialog)"]
+  MATCH -->|"Failed / Unreachable"| BROWSER
+
+  VERIFIED_APP -.->|"Warning: Payload Still Untrusted!"| ATTACK["Fuzz Input: Parameter Tampering & WebView Injections"]
+
+  classDef cyanNode fill:#162444,stroke:#00d4ff,stroke-width:1.5px,color:#e2e8f0;
+  classDef redNode fill:#381622,stroke:#f43f5e,stroke-width:1.5px,color:#fecdd3;
+  classDef greenNode fill:#0f241a,stroke:#10b981,stroke-width:1.5px,color:#e2e8f0;
+  classDef amberNode fill:#2c200c,stroke:#f59e0b,stroke-width:1.5px,color:#fef3c7;
+
+  class START,CHECK,OS_RESOLVE,CHECK_ASSET,MATCH,VERIFY,CONFLICT cyanNode;
+  class DISAMBIG,ATTACK redNode;
+  class DIRECT_APP,VERIFIED_APP greenNode;
+  class CUSTOM,HTTPS,BROWSER amberNode;
+          </pre>
+          <div class="diagram-caption">Figure 7.1: Intent routing mechanics: Custom schemes vs. Cryptographically verified Android App Links & iOS Universal Links</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">Custom Scheme Deep Links</div>
+          <p>Defined via custom URI schemes (e.g., <code>myapp://gizmos</code>):</p>
+          <pre><code>&lt;intent-filter&gt;
+    &lt;action android:name="android.intent.action.VIEW" /&gt;
+    &lt;category android:name="android.intent.category.DEFAULT" /&gt;
+    &lt;category android:name="android.intent.category.BROWSABLE" /&gt;
+    &lt;data android:scheme="myapp" android:host="gizmos" /&gt;
+&lt;/intent-filter&gt;</code></pre>
+          <ul>
+            <li><strong>No Verification:</strong> Any application can register the same custom scheme; susceptible to
+              interception.</li>
+            <li><strong>Android 12+ Behavior:</strong> Web intents open in browser by default unless verified; custom
+              schemes remain unverifiable.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Android App Links (autoVerify="true")</div>
+          <p>Cryptographically verifies domain association via Digital Asset Links:</p>
+          <pre><code>&lt;intent-filter android:autoVerify="true"&gt;
+    &lt;action android:name="android.intent.action.VIEW" /&gt;
+    &lt;category android:name="android.intent.category.DEFAULT" /&gt;
+    &lt;category android:name="android.intent.category.BROWSABLE" /&gt;
+    &lt;data android:scheme="https" android:host="example.com" /&gt;
+&lt;/intent-filter&gt;</code></pre>
+          <ul>
+            <li>Hosted at <code>https://example.com/.well-known/assetlinks.json</code> with SHA-256 cert fingerprint.
+            </li>
+            <li>Eliminates the disambiguation dialog and opens content directly.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="alert alert-warning">
+        <div>
+          <span class="alert-title">What autoVerify Does NOT Prevent</span>
+          Verification proves <strong>who receives the URL</strong>, not <strong>who sends it</strong> or <strong>what
+            payload it carries</strong>. Verified App Links remain completely vulnerable to parameter tampering,
+          directory traversal, cross-app scripting, and internal open redirects into WebViews (<code>loadUrl()</code>).
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">OWASP MASTG Standards & Testing CLI</div>
+        <p><strong>Standards:</strong> <code>MASTG-TEST-0393</code> (Unverified App Links) and
+          <code>MASTG-TEST-0394</code> (Missing Input Validation in Scheme Handlers).</p>
+        <pre><code># Check domain verification status on device
+adb shell pm get-app-links --user cur &lt;package_name&gt;
+
+# Inspect device-wide domain preferred handling
+adb shell dumpsys package domain-preferred-apps
+
+# Force domain verification re-check (wait at least 20s)
+adb shell pm verify-app-links --re-verify &lt;package_name&gt;
+
+# Simulate browser link invocation
+adb shell am start -W -a android.intent.action.VIEW -d "myapp://gizmos?next=https://attacker.com"</code></pre>
+      </div>
+    </section>
+
+    <!-- SECTION 8 -->
+    <section id="section-8">
+      <h3 class="section-header">8. Obfuscation, Commercial RASP & Native Packers</h3>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">R8 / ProGuard (Free / Built-in)</div>
+          <p><strong>Name Mangling Only:</strong> R8 only renames classes, methods, and fields for DEX size reduction
+            (<code>com.example.MyActivity</code> → <code>a.b.a</code>).</p>
+          <p><strong>Zero Advanced Protections:</strong> R8 provides <em>no control-flow flattening, no string
+              encryption, no class encryption, no call hiding, no code virtualization, and no runtime self-protection
+              (RASP)</em>.</p>
+          <p><strong>Reversibility:</strong> A leaked <code>mapping.txt</code> fully collapses all R8 obfuscation via
+            the <code>retrace</code> CLI tool.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Commercial App Hardening & Shielding</div>
+          <p><strong>Advanced Code Hardening:</strong> Applies control-flow flattening, opaque predicates, string/asset
+            encryption, and code virtualization (transforming methods into proprietary VM bytecode).</p>
+          <p><strong>Runtime Application Self-Protection (RASP):</strong> Actively detects root/jailbreak, debuggers,
+            emulators, hook frameworks (Frida, Substrate), and repackaging.</p>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Vendor & Product</th>
+              <th>Deployment Model</th>
+              <th>Primary Capabilities & Differentiators</th>
+              <th>Pentesting Assessment Considerations</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Guardsquare DexGuard / iXGuard</strong></td>
+              <td>Post-compilation Gradle / Xcode plugin</td>
+              <td>Code hardening (Control flow, Call hiding, Virtualization, Data encryption) + dynamic RASP (Root,
+                Jailbreak, Frida hook detection).</td>
+              <td>Polymorphic engine injects variable integrity checks per build; integrates with ThreatCast telemetry.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Promon Shield for Mobile</strong></td>
+              <td>Post-compile binary injection (no source required)</td>
+              <td>Bytecode DEX encryption with white-box crypto; process integrity; anti-hooking; anti-screen recording.
+              </td>
+              <td>Promon Insight collects cloud telemetry on rooting, hooking, and emulation events.</td>
+            </tr>
+            <tr>
+              <td><strong>Appdome ONEShield</strong></td>
+              <td>No-code CI/CD pipeline automation platform</td>
+              <td>Bundles anti-tamper, anti-reverse engineering, anti-Frida, anti-emulator, and MiTM prevention into
+                Fusion Sets™.</td>
+              <td><strong>Build-to-Test:</strong> Vendor feature that stands down RASP for recognized test automation
+                suites.</td>
+            </tr>
+            <tr>
+              <td><strong>Zimperium MAPS (zShield / zDefend)</strong></td>
+              <td>Dual: Low-Code (Source) & No-Code (Binary)</td>
+              <td>zShield provides binary obfuscation; zDefend provides an on-device runtime threat engine with AI
+                threat detection.</td>
+              <td>Supports Over-The-Air (OTA) threat policy updates without releasing a new store build.</td>
+            </tr>
+            <tr>
+              <td><strong>Native Packers (Tencent Legu, Qihoo, Bangcle)</strong></td>
+              <td>Native stub packer / protector</td>
+              <td>Encrypts and hides DEX bytecode in native libraries, dynamically decrypting into memory at runtime.
+              </td>
+              <td>Memory-dumping ART structures via Frida (<code>OpenMemory</code>) bypasses encryption generically.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 9 -->
+    <section id="section-9">
+      <h3 class="section-header">9. Framework Analysis: Flutter & Dart AOT</h3>
+
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-header">
+          <span>Flutter Execution & Traffic Interception Architecture</span>
+          <code>Engine & Network Pipeline</code>
+        </div>
+        <div class="mermaid-container">
+          <pre class="mermaid">
+flowchart LR
+  subgraph APP_LAYER["App Binary Layer (Dart AOT)"]
+    direction TB
+    DART_CODE["Flutter UI & Business Logic"] --> DART_IO["dart:io (HttpClient)"]
+    DART_IO -.->|"Ignores System Proxy!"| PROXY_FAIL["Direct TCP Outbound<br/>(Bypasses Wi-Fi Proxy)"]
+  end
+
+  subgraph ENGINE_LAYER["Flutter Engine (libflutter.so / Flutter.framework)"]
+    direction TB
+    BORING_SSL["Statically Linked BoringSSL"]
+    VERIFY_FUNC["ssl_verify_peer_cert() / session_verify_cert_chain()"]
+    BORING_SSL --- VERIFY_FUNC
+  end
+
+  subgraph OS_STORE["OS Trust Store"]
+    SYS_CA["/system/etc/security/cacerts/<br/><b>(System Store - Trusted by Dart)</b>"]
+    USER_CA["Settings User CAs<br/><b>(Ignored by Dart)</b>"]
+  end
+
+  subgraph BYPASS_METHODS["Interception Solutions"]
+    direction TB
+    M1["1. Push CA to System Store<br/><i>(ProxyDroid / iptables DNAT)</i>"]
+    M2["2. Frida Memory Hook<br/><i>(disable-flutter-tls.js pattern scan)</i>"]
+    M3["3. reFlutter Patching<br/><i>(Binary patch BoringSSL verify)</i>"]
+  end
+
+  DART_IO --> BORING_SSL
+  BORING_SSL -->|"Direct Read (security_context_linux.cc)"| SYS_CA
+  
+  M1 ==>|"Routes Direct Traffic"| PROXY_FAIL
+  M2 ==>|"Hooks & Returns 0 (OK)"| VERIFY_FUNC
+  M3 ==>|"Replaces with Patched Engine"| BORING_SSL
+
+  classDef dartStyle fill:#162444,stroke:#00d4ff,stroke-width:1.5px,color:#e2e8f0;
+  classDef engStyle fill:#231942,stroke:#a855f7,stroke-width:1.5px,color:#e2e8f0;
+  classDef failStyle fill:#381622,stroke:#f43f5e,stroke-width:1.5px,color:#fecdd3;
+  classDef passStyle fill:#0f241a,stroke:#10b981,stroke-width:1.5px,color:#e2e8f0;
+  classDef bpStyle fill:#2c200c,stroke:#f59e0b,stroke-width:1.5px,color:#fef3c7;
+
+  class DART_CODE,DART_IO dartStyle;
+  class BORING_SSL,VERIFY_FUNC engStyle;
+  class PROXY_FAIL,USER_CA failStyle;
+  class SYS_CA passStyle;
+  class M1,M2,M3 bpStyle;
+          </pre>
+          <div class="diagram-caption">Figure 9.1: Flutter Dart AOT network stack, CA evaluation mechanics, and penetration test interception bypass vectors</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">Flutter Internal Architecture</div>
+          <p><strong>Debug Mode:</strong> Uses Dart VM with Just-in-Time (JIT) compilation and hot-reload; package
+            contains <code>kernel_blob.bin</code>.</p>
+          <p><strong>Release Mode:</strong> Compiles Ahead-of-Time (AOT) into native shared libraries:</p>
+          <ul>
+            <li><strong>Android:</strong> <code>libapp.so</code> (app logic) + <code>libflutter.so</code> (engine).</li>
+            <li><strong>iOS:</strong> <code>App.framework/App</code> + <code>Flutter.framework/Flutter</code>.</li>
+          </ul>
+          <p><strong>Snapshot Hash:</strong> <code>libapp.so</code> is coupled to the exact engine snapshot version;
+            tooling must match this hash.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">The Proxy & CA Trust Store Myth</div>
+          <p><strong>Proxy Blindness:</strong> <code>dart:io</code>'s <code>HttpClient</code> <em>completely ignores
+              Android system proxy settings</em>. Traffic flows direct unless <code>findProxy</code> is configured in
+            Dart code.</p>
+          <p><strong>Trust Store Reality:</strong> Dart on Android <em>does not compile in root certs</em>. Dart SDK
+            source (<code>security_context_linux.cc</code>) proves it directly reads
+            <code>/system/etc/security/cacerts</code>.</p>
+          <p><strong>The Root Cause:</strong> Burp CAs installed via Android settings land in the <strong>user
+              store</strong>, which Dart never reads. Pushing CA to the <strong>system store</strong> works natively!
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Flutter Traffic Interception & Reverse Engineering Toolkit</div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Interception / RE Method</th>
+                <th>Tool & Command</th>
+                <th>Operational Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>System CA + Routing</strong></td>
+                <td>Push CA to <code>/system/etc/security/cacerts/</code> + <strong>ProxyDroid / iptables DNAT</strong>
+                </td>
+                <td>Cheapest path on rooted Android; defeats default TLS evaluation without patching binary.</td>
+              </tr>
+              <tr>
+                <td><strong>reFlutter Engine Patching</strong></td>
+                <td><code>reflutter app.apk</code> → <code>release.RE.apk</code></td>
+                <td>Replaces engine with pre-patched BoringSSL that passes cert validation unconditionally; dumps Dart
+                  classes.</td>
+              </tr>
+              <tr>
+                <td><strong>Frida Pattern Hooking</strong></td>
+                <td><code>frida -U -f pkg -l disable-flutter-tls.js</code> (NVISO)</td>
+                <td>Hooks <code>ssl_verify_peer_cert</code> in BoringSSL via memory byte pattern scanning; works
+                  dynamically.</td>
+              </tr>
+              <tr>
+                <td><strong>Static Reverse Engineering</strong></td>
+                <td><code>python3 blutter.py path/to/lib/arm64-v8a out_dir</code></td>
+                <td>Parses Dart AOT snapshots into annotated ARM assembly and Frida symbol templates.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 10 -->
+    <section id="section-10">
+      <h3 class="section-header">10. Consolidated Pentesting Checklist & Retesting Workflow</h3>
+      <div class="card">
+        <div class="card-header">Execution Phase 1: Static Discovery & Reconnaissance</div>
+        <ul class="checklist">
+          <li class="checklist-item"><input type="checkbox" class="checkbox"> Identify architecture: Check if app is
+            native Java/Kotlin, Flutter (<code>libflutter.so</code>), or React Native.</li>
+          <li class="checklist-item"><input type="checkbox" class="checkbox"> Decompile APK/IPA using JADX / apktool /
+            Ghidra; inspect manifest for <code>android:debuggable="true"</code>.</li>
+          <li class="checklist-item"><input type="checkbox" class="checkbox"> Review all
+            <code>&lt;intent-filter&gt;</code> elements: Flag HTTP/S filters missing
+            <code>android:autoVerify="true"</code> (<code>MASTG-TEST-0393</code>).</li>
+          <li class="checklist-item"><input type="checkbox" class="checkbox"> Identify all exported activities,
+            services, and content providers lacking permission barriers.</li>
+        </ul>
+
+        <div class="card-header" style="margin-top: 20px;">Execution Phase 2: Traffic Interception Setup</div>
+        <ul class="checklist">
+          <li class="checklist-item"><input type="checkbox" class="checkbox"> Android API 24+: Push Burp CA to
+            <code>/system/etc/security/cacerts/</code> (rooted) or patch Network Security Config via apktool.</li>
+          <li class="checklist-item"><input type="checkbox" class="checkbox"> iOS: Install CA profile AND enable Full
+            Trust under <em>Settings → General → About → Certificate Trust Settings</em>.</li>
+          <li class="checklist-item"><input type="checkbox" class="checkbox"> Flutter apps: Use ProxyDroid / iptables
+            DNAT or patch via <code>reFlutter</code> / NVISO Frida script.</li>
+        </ul>
+
+        <div class="card-header" style="margin-top: 20px;">Execution Phase 3: Runtime Fuzzing & IPC Exploitation</div>
+        <ul class="checklist">
+          <li class="checklist-item"><input type="checkbox" class="checkbox"> Query App Link verification state on
+            device using <code>adb shell pm get-app-links --user cur &lt;pkg&gt;</code>.</li>
+          <li class="checklist-item"><input type="checkbox" class="checkbox"> Fuzz deep link intent handlers for
+            parameter tampering, auth bypass, and open redirects into WebViews (<code>MASTG-TEST-0394</code>).</li>
+          <li class="checklist-item"><input type="checkbox" class="checkbox"> Dynamic Code Loading: On Android 14+
+            targets, audit whether dynamically loaded DEX files are marked read-only before execution.</li>
+          <li class="checklist-item"><input type="checkbox" class="checkbox"> Evaluate RASP & Anti-Tampering: Check if
+            Appdome <code>Build-to-Test</code> flag is active, or trace memory checks using Frida.</li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>Consolidated Mobile Application Penetration Testing Technical Report & Research Reference</p>
+    <p style="margin-top: 6px; font-size: 12px; color: #64748b;">Organized from notes.md (Part I) and agent-research.md
+      (Part II) • OWASP MASTG Aligned</p>
+  </footer>
+
+</body>
+
+</html>

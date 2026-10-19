@@ -320,10 +320,10 @@
 
           const plaintext = new TextDecoder('utf-8').decode(decryptedBuffer);
 
-          // Overwrite the document in-memory with decrypted HTML
-          document.open();
-          document.write(plaintext);
-          document.close();
+          // Navigate to a Blob URL so the decrypted CV fully replaces this shell page
+          const blob = new Blob([plaintext], { type: 'text/html; charset=utf-8' });
+          const blobUrl = URL.createObjectURL(blob);
+          window.location.replace(blobUrl);
         } catch (err) {
           console.error(err);
           showFormState(err.message || 'Decryption failed: authentication tag mismatch or invalid key.', true);

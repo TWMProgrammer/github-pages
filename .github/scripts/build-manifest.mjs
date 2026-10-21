@@ -19,7 +19,8 @@ const tracked = execFileSync("git", ["ls-files", "*.html"], { cwd: ROOT, encodin
   .split("\n")
   .map((line) => line.trim())
   .filter(Boolean)
-  .filter((rel) => !EXCLUDE.has(rel));
+  .filter((rel) => !EXCLUDE.has(rel))
+  .filter((rel) => !rel.startsWith("hidden/"));
 
 const pages = [];
 

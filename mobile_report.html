@@ -447,6 +447,7 @@
         <a href="#section-6" class="toc-link">6. Android API-Level Security Matrix (23-36+)</a>
         <a href="#section-7" class="toc-link">7. Deep Links vs Android App Links</a>
         <a href="#section-8" class="toc-link">8. Obfuscation, Commercial RASP & Packers</a>
+        <a href="#section-8-5" class="toc-link">8.5. Reading & Patching Smali Directly</a>
         <a href="#section-9" class="toc-link">9. Framework Analysis: Flutter & Dart AOT</a>
         <a href="#section-10" class="toc-link">10. Consolidated Pentesting Checklist</a>
       </div>
@@ -851,6 +852,23 @@ flowchart TD
           <li><strong>LPE 1-day / 0-day exploits:</strong> Gaining transient in-memory root privileges via an unpatched
             kernel vulnerability without persistently modifying firmware partitions.</li>
         </ul>
+        <p style="margin-top: 14px;"><strong>Typical Frida/apktool Smali Patch Target:</strong> A certificate pinning
+          check returning a boolean is the usual hook/patch point — force it to always return success (<code>const/4
+          v0, 0x1</code>) instead of hooking it at runtime:</p>
+        <pre><code># Before patch (decompiled from apktool)
+.method public isCertificateTrusted(Ljava/security/cert/X509Certificate;)Z
+    .locals 1
+    invoke-direct {p0, p1}, Lcom/example/net/PinningTrustManager;->validatePin(Ljava/security/cert/X509Certificate;)Z
+    move-result v0
+    return v0
+.end method
+
+# After patch (smali edit, re-signed via apksigner)
+.method public isCertificateTrusted(Ljava/security/cert/X509Certificate;)Z
+    .locals 1
+    const/4 v0, 0x1
+    return v0
+.end method</code></pre>
       </div>
     </section>
 
@@ -1073,6 +1091,23 @@ adb shell am start -W -a android.intent.action.VIEW -d "myapp://gizmos?next=http
               (RASP)</em>.</p>
           <p><strong>Reversibility:</strong> A leaked <code>mapping.txt</code> fully collapses all R8 obfuscation via
             the <code>retrace</code> CLI tool.</p>
+          <p><strong>Smali Before/After:</strong> Only identifiers change; control flow and logic stay untouched,
+            so the method body remains trivially readable post-obfuscation.</p>
+          <pre><code># Original (decompiled from source-mapped build)
+.method public checkLicenseValid()Z
+    .locals 1
+    invoke-direct {p0}, Lcom/example/MyActivity;->validateSignature()Z
+    move-result v0
+    return v0
+.end method
+
+# After R8 (mapping.txt reversed via retrace)
+.method public a()Z
+    .locals 1
+    invoke-direct {p0}, La/b/a;->a()Z
+    move-result v0
+    return v0
+.end method</code></pre>
         </div>
 
         <div class="card">
@@ -1135,6 +1170,42 @@ adb shell am start -W -a android.intent.action.VIEW -d "myapp://gizmos?next=http
             </tr>
           </tbody>
         </table>
+      </div>
+    </section>
+
+    <!-- SECTION 8.5 -->
+    <section id="section-8-5">
+      <h3 class="section-header">8.5. Reading & Patching Smali Directly</h3>
+      <div class="card">
+        <div class="card-header">Smali/Baksmali Workflow (apktool)</div>
+        <p>Smali is the human-readable textual representation of Dalvik bytecode (one register-based instruction
+          per line), produced by disassembling a <code>.dex</code> file with <code>baksmali</code> and reassembled
+          back to <code>.dex</code> with <code>smali</code> — both bundled inside <code>apktool</code>. It is the
+          standard medium for manual static patching when source is unavailable and a full Frida/root setup isn't
+          viable (e.g. CI pipelines, static-only engagements, offline review).</p>
+        <pre><code># 1. Decode APK to smali + resources
+apktool d target.apk -o target_src
+
+# 2. Edit target_src/smali/com/example/.../SomeClass.smali directly
+
+# 3. Rebuild APK from edited smali
+apktool b target_src -o target_patched.apk
+
+# 4. Re-sign (required — Android rejects unsigned/mismatched-signature installs)
+apksigner sign --ks debug.keystore target_patched.apk</code></pre>
+        <p><strong>Common fields in a method block:</strong> <code>.locals</code> declares register count;
+          <code>p0</code>..<code>pN</code> are parameter registers (<code>p0</code> is <code>this</code> for
+          instance methods); <code>v0</code>..<code>vN</code> are local working registers.</p>
+      </div>
+      <div class="alert alert-important">
+        <div>
+          <span class="alert-title">When to Patch Smali vs. Hook with Frida</span>
+          Frida hooking is non-persistent and requires re-attaching per launch, but needs no rebuild/re-sign cycle
+          and leaves the APK untouched on disk. Smali patching is persistent across installs and survives
+          Frida-detection RASP checks that specifically fingerprint the Frida runtime/gadget, but requires a full
+          decode → edit → rebuild → re-sign loop per change and will fail against package signature/integrity
+          verification tied to the original developer key.
+        </div>
       </div>
     </section>
 

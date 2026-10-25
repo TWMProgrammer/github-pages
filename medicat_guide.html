@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medicat Guide: Customizing a Ventoy-Based Multiboot USB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0f1d;
+      --bg-secondary: #11192e;
+      --bg-tertiary: #192540;
+      --bg-card: rgba(23, 34, 59, 0.75);
+      --border-color: rgba(66, 99, 150, 0.25);
+      --border-accent: rgba(0, 212, 255, 0.4);
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-bright: #ffffff;
+      --accent-cyan: #00d4ff;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --code-bg: #070b14;
+      --shadow-subtle: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.65;
+      padding: 0;
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px 80px 24px;
+    }
+
+    header {
+      background: linear-gradient(135deg, rgba(16, 25, 48, 0.95), rgba(7, 11, 20, 0.95)), radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.12), transparent 40%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 48px 0;
+      margin-bottom: 40px;
+    }
+
+    .header-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 212, 255, 0.25);
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: var(--text-bright);
+      line-height: 1.25;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 900px;
+    }
+
+    .toc-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 40px;
+      backdrop-filter: blur(12px);
+    }
+
+    .toc-title {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      margin-bottom: 16px;
+    }
+
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px 24px;
+    }
+
+    .toc-link {
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 13.5px;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s ease;
+    }
+
+    .toc-link:hover {
+      color: var(--accent-cyan);
+    }
+
+    .toc-link::before {
+      content: "→";
+      color: var(--accent-cyan);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+
+    h3.section-header {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin: 35px 0 16px 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h4.sub-header {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      margin: 24px 0 12px 0;
+    }
+
+    h5 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin: 16px 0 8px 0;
+    }
+
+    p,
+    li {
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    ul,
+    ol {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-subtle);
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--accent-cyan);
+    }
+
+    a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--accent-cyan);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #cbd5e1;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent-cyan);
+      background: rgba(0, 212, 255, 0.06);
+      padding: 14px 18px;
+      margin: 16px 0;
+      border-radius: 0 8px 8px 0;
+      color: var(--text-muted);
+    }
+
+    blockquote h3 {
+      color: var(--text-bright);
+      font-size: 1rem;
+      margin-bottom: 8px;
+      border-bottom: none;
+    }
+
+    .screenshot {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .screenshot img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-subtle);
+    }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 30px 0;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 60px;
+    }
+
+    footer a {
+      color: var(--accent-cyan);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-content">
+      <div class="badge">Technical Reference</div>
+      <h1>Medicat Guide</h1>
+      <p class="subtitle">Customizing a Ventoy-based Medicat multiboot USB — updating bundled apps, organizing
+        Ventoy-specific tools, and automating driver installs in the Windows Live boot environments.</p>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <div class="toc-card">
+      <div class="toc-title">Document Navigation Index</div>
+      <div class="toc-grid">
+        <a href="#introduction" class="toc-link">Introduction</a>
+        <a href="#updating" class="toc-link">Updating</a>
+        <a href="#organization" class="toc-link">Organization</a>
+        <a href="#live-boot" class="toc-link">Windows Live Boot Environment</a>
+      </div>
+    </div>
+
+    <section id="introduction">
+      <h3 class="section-header">Introduction</h3>
+      <p>Medicat USB is based on Ventoy and includes lots of different apps and programs, but they can be daunting
+        to look at for the first time. This guide covers how to customize Medicat to your own liking. A M.2 drive
+        in a USB-C enclosure (at least 256GB) is recommended; a thumb drive works too but may be slower.</p>
+      <p>The drive should have MBR and NTFS.</p>
+      <p>When you first install Medicat, you will have 2 partitions on your drive:</p>
+      <ul>
+        <li>VTOYEFI</li>
+        <li>Medicat</li>
+      </ul>
+      <p>VTOYEFI should most likely never be touched, while the Medicat partition is the one we will be working
+        on.</p>
+    </section>
+
+    <section id="updating">
+      <h3 class="section-header">Updating</h3>
+
+      <h4 class="sub-header">PortableApps Launcher</h4>
+      <div class="card">
+        <p>Medicat also includes a PortableApps.com Launcher with some apps preinstalled.</p>
+        <p>First, update the launcher and the apps inside it: double-click <code>Start.exe</code> to bring up the
+          launcher, then <strong>Apps &gt; Check for updates</strong>.</p>
+        <p>If there are issues or you cannot access the internet, you can go directly to the PortableApps.com
+          website and download from there, then <strong>Apps &gt; Install a New App [paf.exe]</strong>.</p>
+        <p>Here is an excerpt from the official documentation:</p>
+        <blockquote>
+          <h3>Manually Updating the Platform</h3>
+          <p>If you run into a situation where your copy of the PortableApps.com Platform is unable to
+            automatically update itself due to corruption, disk issues, a network issue, or a bug, you can
+            manually update it. First, head to the <a href="https://portableapps.com/download">Download
+              page</a> and download a copy of the current release. If your copy of the Platform is able to run,
+            start it up and then click Apps and then Install a New App (.paf.exe). Explore to the location of the
+            new copy of the Platform you downloaded, select it and click OK. The update should happen
+            automatically and your PortableApps.com Platform will restart with the new version.</p>
+          <p>If your copy of the PortableApps.com Platform does not start, explore to the location of the download
+            of the current version you just downloaded. Run the installer and select Upgrade Existing Install. If
+            you installed to one of the standard locations (root of a portable drive, userprofile folder, cloud
+            folder) it should automatically detect it. If it does, select the platform to upgrade and continue. If
+            it does not, select custom location and click Next. Now browse for the directory containing the
+            platform's Start.exe launcher and select it. This folder will also contain the PortableApps folder
+            that contains all your apps. Don't select the PortableApps folder within, though. Select to install
+            and launch and everything should be working as before. If not, please post in our
+            <a href="https://portableapps.com/forums/support/portableapps_menu">platform support forum</a> with the
+            complete details of your issue and we'll help you out.</p>
+        </blockquote>
+      </div>
+
+      <h4 class="sub-header">Snappy Driver Installer</h4>
+      <div class="card">
+        <p>An app included in Medicat that integrates very well with the included Mini Windows 10 image and is
+          useful overall is Snappy Driver Installer. It updates drivers through torrent. The included torrent
+          client is a hit or miss, although it is better integrated in the app if it hits. Cloudflare WARP seems to
+          hit more often, so check with WARP if your internet is weird.</p>
+        <p>Here is the magnet link if you still wish to download it with your own torrent client. If you go that
+          route you will have to manually patch it in.</p>
+        <p>You'll find it in <code>:\PortableApps\SnappyDriverInstaller\Drivers</code>.</p>
+        <pre><code>magnet:?xt=urn:btih:633b44c839bc3514a8f6ae832c434c788f20db8b&dn=SDIO_Update&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=http%3A%2F%2Fshare.camoe.cn%3A8080%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce</code></pre>
+      </div>
+    </section>
+
+    <section id="organization">
+      <h3 class="section-header">Organization</h3>
+      <div class="card">
+        <p>To organize myself, I put all the Ventoy specific tools in a separate custom folder. These include:</p>
+        <ul>
+          <li>The Ventoy Plugson tool to modify Ventoy itself</li>
+          <li>The Ventoy Shortcut tools</li>
+          <li>The Windows Injection tool</li>
+        </ul>
+        <p>I downloaded the .exe version of the Plugson tool and included it at the same place. As the Windows and
+          Linux versions look in different folders for its libraries, I needed to create 2 folders "tool" &amp;
+          "ventoy".</p>
+        <div class="screenshot">
+          <img src="medicat_guide/image1.png" alt="Ventoy tools folder organization with tool and ventoy subfolders">
+        </div>
+      </div>
+    </section>
+
+    <section id="live-boot">
+      <h3 class="section-header">Windows Live Boot Environment</h3>
+      <p>Using 2 Windows Live boot environments, here's the customization for both of them.</p>
+      <p>One thing to know is that they use <code>pecmd</code> to set up everything. It can be found at
+        <code>X:\Windows\System32\</code> when booted in the environment.</p>
+
+      <h4 class="sub-header">Mini Windows 10 (included in Medicat)</h4>
+      <div class="card">
+        <p>Here I needed to automatically install the OEM drivers at startup because my laptop touchpad doesn't
+          work on boot.</p>
+        <p>I went into the /System folders of the drive. In there, the readme says to put the script in the
+          Startup folder next to it.</p>
+        <div class="screenshot">
+          <img src="medicat_guide/image2.png" alt="System folder with Startup folder for boot scripts">
+        </div>
+
+        <h5>AutoDriver.bat</h5>
+        <pre><code>cd Y:\PortableApps\SnappyDriverInstaller
+
+.\SDIO_x64_R767.exe -script:Y:\PortableApps\SnappyDriverInstaller\scripts\autodriver.txt
+
+exit</code></pre>
+
+        <p>The script calls for <code>autodriver.txt</code>, so here's that file:</p>
+        <pre><code>#
+# Snappy Driver Installer Origin
+#
+# Title: Simple Install
+# Author: Glenn Delahoy
+# Description: Simple script to install missing and better drivers.
+# Notes: Test mode by default. Set 'enableinstall on' to make it live.
+#
+
+echo ==============================
+echo Snappy Driver Installer Origin
+echo Simple Install
+echo ==============================
+echo
+echo Initialising...
+verbose 384
+logging off
+enableinstall on
+init
+echo Installing missing and better drivers...
+select missing better lan wlan-wifi touchpad chipset
+install
+end</code></pre>
+
+        <p>This is a basic script copied from the default script. I of course activated it and customized the
+          drivers I wanted to install &mdash; for me it was just necessary to interact with the environment,
+          touchpad and peripherals in general.</p>
+        <p>Now when running Mini Windows 10 it will install OEM drivers for laptops so that we can interact with
+          the environment without having to manually install the drivers every time with the keyboard.</p>
+      </div>
+
+      <h4 class="sub-header">Hiren's Boot CD PE (separate download)</h4>
+      <div class="card">
+        <p><a href="https://www.hirensbootcd.org/">Download</a></p>
+        <p>For HBCD I needed to automatically start the <code>Start.exe</code> from PortableApps.</p>
+        <p>First I took the <code>HBCD_PE.ini</code> file from the root of the HBCD .iso and put it at the root of
+          the drive.</p>
+        <div class="screenshot">
+          <img src="medicat_guide/image3.png" alt="HBCD_PE.ini placed at the root of the drive">
+        </div>
+        <p>I opened it up and modified the <code>ExtPrograms</code> subcommand to:</p>
+        <pre><code>_SUB ExtPrograms
+EXEC Y:\Start.exe
+_END</code></pre>
+        <p>Now when HBCD boots up it will start the PortableApps Launcher as well.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    Technical Reference &middot; <a href="index.html">Back to index</a>
+  </footer>
+
+</body>
+
+</html>

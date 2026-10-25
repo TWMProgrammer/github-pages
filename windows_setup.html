@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Windows Setup: Personal Configuration & Customization Reference</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0f1d;
+      --bg-secondary: #11192e;
+      --bg-tertiary: #192540;
+      --bg-card: rgba(23, 34, 59, 0.75);
+      --border-color: rgba(66, 99, 150, 0.25);
+      --border-accent: rgba(0, 212, 255, 0.4);
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-bright: #ffffff;
+      --accent-cyan: #00d4ff;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --code-bg: #070b14;
+      --shadow-subtle: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.65;
+      padding: 0;
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px 80px 24px;
+    }
+
+    header {
+      background: linear-gradient(135deg, rgba(16, 25, 48, 0.95), rgba(7, 11, 20, 0.95)), radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.12), transparent 40%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 48px 0;
+      margin-bottom: 40px;
+    }
+
+    .header-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 212, 255, 0.25);
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: var(--text-bright);
+      line-height: 1.25;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 900px;
+    }
+
+    .toc-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 40px;
+      backdrop-filter: blur(12px);
+    }
+
+    .toc-title {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      margin-bottom: 16px;
+    }
+
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px 24px;
+    }
+
+    .toc-link {
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 13.5px;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s ease;
+    }
+
+    .toc-link:hover {
+      color: var(--accent-cyan);
+    }
+
+    .toc-link::before {
+      content: "→";
+      color: var(--accent-cyan);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+
+    h3.section-header {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin: 35px 0 16px 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h4.sub-header {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      margin: 24px 0 12px 0;
+    }
+
+    h5 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin: 16px 0 8px 0;
+    }
+
+    h6 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin: 14px 0 6px 0;
+    }
+
+    p,
+    li {
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    ul,
+    ol {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-subtle);
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--accent-cyan);
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--accent-cyan);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #cbd5e1;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+
+    .screenshot {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .screenshot img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .screenshot figcaption {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 30px 0;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 60px;
+    }
+
+    footer a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-content">
+      <div class="badge">Technical Reference</div>
+      <h1>Windows Setup</h1>
+      <p class="subtitle">Personal reference for a full Windows installation and customization workflow — base
+        install steps, driver handling, and Windhawk-based taskbar/start menu theming.</p>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <div class="toc-card">
+      <div class="toc-title">Document Navigation Index</div>
+      <div class="toc-grid">
+        <a href="#install" class="toc-link">PC Windows Installation</a>
+        <a href="#customisation" class="toc-link">Customisation</a>
+        <a href="#windhawk" class="toc-link">Windhawk</a>
+        <a href="#taskbar-clock" class="toc-link">Taskbar Clock Customization</a>
+      </div>
+    </div>
+
+    <section id="install">
+      <h3 class="section-header">PC Windows Installation</h3>
+      <div class="card">
+        <p>Starting point: Medicat USB.</p>
+        <ul>
+          <li>Driver Installs from Medicat (optional)</li>
+          <li>Windows Activation</li>
+          <li>Win11Debloat</li>
+          <li>CTT with O&amp;O Shutup
+            <ul>
+              <li>UniGetUI with bundle</li>
+              <li>Install drivers from SNI (if not done yet)</li>
+              <li>Install driver for your GPU if you want</li>
+            </ul>
+          </li>
+          <li>Winaero Tweaker (last touches)</li>
+          <li>PowerToys if needed</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="customisation">
+      <h3 class="section-header">Customisation</h3>
+
+      <h4 class="sub-header" id="windhawk">Windhawk</h4>
+      <div class="card">
+        <ul>
+          <li>Windows 11 Taskbar Styler</li>
+          <li>Windows 11 Start Menu Styler</li>
+          <li>Taskbar tray system icon tweaks</li>
+          <li>Taskbar Dock Animation</li>
+          <li>Taskbar auto-hide when maximized</li>
+          <li>Taskbar auto-hide speed</li>
+          <li>Modernize Folder Picker Dialog</li>
+          <li>Explorerframe fixes for Win11 22H2+</li>
+          <li>Better Taskbar Autohide</li>
+        </ul>
+
+        <h5 id="taskbar-clock">Taskbar Clock Customization</h5>
+
+        <h6>Settings</h6>
+        <div class="screenshot">
+          <img src="windows_setup/image1.png" alt="Taskbar Clock Customization settings panel">
+        </div>
+        <div class="screenshot">
+          <img src="windows_setup/image2.png" alt="Taskbar Clock Customization settings panel continued">
+        </div>
+
+        <h6>Top line</h6>
+        <pre><code>⬆️ %upload_speed% - ⬇️ %download_speed% | %date%</code></pre>
+
+        <h6>Bottom line</h6>
+        <pre><code>Jellyfin %web2% | %time2%</code></pre>
+
+        <h6>Tooltip extra line</h6>
+        <pre><code>====Weather===%n%%weather%%n%%n%====Metrics====%n%CPU:%cpu% %n%RAM: %ram%%n%GPU: %gpu%%n%Total Disk: %disk_total%%n%Disk: 📖%disk_read% - ✍️%disk_write%%n%Network: %total_speed%%n%%n%=====Media====%n%%media_status% %media_title%%n%Artist: %media_artist%%n%Album: %media_album%</code></pre>
+
+        <h6>Result</h6>
+        <div class="screenshot">
+          <img src="windows_setup/image3.png" alt="Resulting customized taskbar clock">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Network Stack</div>
+        <p>Network Stack</p>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    Technical Reference &middot; <a href="index.html">Back to index</a>
+  </footer>
+
+</body>
+
+</html>

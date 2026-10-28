@@ -21,17 +21,17 @@ jobs:
         with:
           node-version: 20
 
-      - name: Generate manifest.json
+      - name: Generate manifest.json and manifest.js
         run: node .github/scripts/build-manifest.mjs
 
       - name: Commit manifest if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if ! git diff --quiet -- manifest.json; then
-            git add manifest.json
+          if ! git diff --quiet -- manifest.json manifest.js; then
+            git add manifest.json manifest.js
             git commit -m "chore: update page manifest [skip ci]"
             git push
           else
-            echo "No changes to manifest.json"
+            echo "No changes to manifest.json/manifest.js"
           fi

@@ -1,20 +1,23 @@
 {
-  "generated": "2026-10-25T17:45:30.479Z",
+  "generated": "2026-10-28T03:59:08.959Z",
   "pages": [
     {
       "path": "medicat_guide.html",
       "title": "Medicat Guide: Customizing a Ventoy-Based Multiboot USB",
-      "modified": "2026-10-25T17:45:26.328Z"
+      "topic": "misc",
+      "modified": "2026-10-28T03:49:09.647Z"
     },
     {
       "path": "mobile_report.html",
       "title": "Mobile Application Penetration Testing: Consolidated Technical Reference & Research Report",
-      "modified": "2026-10-25T17:45:26.330Z"
+      "topic": "mobile",
+      "modified": "2026-10-28T03:49:08.172Z"
     },
     {
       "path": "windows_setup.html",
       "title": "Windows Setup: Personal Configuration & Customization Reference",
-      "modified": "2026-10-25T17:45:26.330Z"
+      "topic": "misc",
+      "modified": "2026-10-28T03:49:10.747Z"
     }
   ]
 }

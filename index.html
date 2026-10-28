@@ -4,222 +4,634 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TWMProgrammer</title>
+  <meta name="description" content="Security research, mobile/app pentesting notes, and build logs.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="manifest.js"></script>
   <style>
     :root {
+      --bg: #f8fafc;
+      --bg-grad: radial-gradient(circle at 50% -10%, #e0f2fe 0%, #f8fafc 60%);
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: rgba(14, 116, 144, 0.14);
+      --nav-bg: rgba(248, 250, 252, 0.75);
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --accent-glow: rgba(2, 132, 199, 0.16);
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --chip-bg: rgba(2, 132, 199, 0.08);
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      color-scheme: light;
+    }
+
+    :root[data-theme="dark"] {
       --bg: #090d16;
+      --bg-grad: radial-gradient(circle at 50% -10%, #172554 0%, #090d16 70%);
       --card-bg: rgba(15, 23, 42, 0.88);
       --card-border: rgba(56, 189, 248, 0.22);
+      --nav-bg: rgba(9, 13, 22, 0.75);
       --accent: #38bdf8;
       --accent-hover: #0ea5e9;
       --accent-glow: rgba(56, 189, 248, 0.22);
       --text: #f1f5f9;
       --text-muted: #94a3b8;
-      --danger: #f43f5e;
-      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'Fira Code', monospace;
+      --chip-bg: rgba(56, 189, 248, 0.1);
+      color-scheme: dark;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #090d16;
+        --bg-grad: radial-gradient(circle at 50% -10%, #172554 0%, #090d16 70%);
+        --card-bg: rgba(15, 23, 42, 0.88);
+        --card-border: rgba(56, 189, 248, 0.22);
+        --nav-bg: rgba(9, 13, 22, 0.75);
+        --accent: #38bdf8;
+        --accent-hover: #0ea5e9;
+        --accent-glow: rgba(56, 189, 248, 0.22);
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --chip-bg: rgba(56, 189, 248, 0.1);
+        color-scheme: dark;
+      }
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html { scroll-behavior: smooth; }
+
     body {
       min-height: 100vh;
-      background: radial-gradient(circle at 50% 20%, #172554 0%, #090d16 75%);
+      background: var(--bg-grad);
+      background-color: var(--bg);
       color: var(--text);
       font-family: var(--font-main);
-      padding: 48px 24px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    a { color: inherit; }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
       display: flex;
-      justify-content: center;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 24px;
+      background: var(--nav-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--card-border);
     }
 
-    .wrapper {
-      width: 100%;
-      max-width: 720px;
-    }
-
-    header {
-      margin-bottom: 32px;
-      text-align: center;
-    }
-
-    header h1 {
-      font-size: 28px;
+    .brand {
       font-weight: 700;
-      letter-spacing: -0.02em;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    header p {
-      margin-top: 8px;
-      color: var(--text-muted);
+    .brand i { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
       font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: color 0.15s ease;
     }
 
-    .card {
+    .nav-links a:hover { color: var(--accent); }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .lang-picker {
+      position: relative;
+    }
+
+    .lang-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-family: var(--font-main);
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .lang-trigger:hover { border-color: var(--accent); }
+
+    .lang-trigger i {
+      font-size: 10px;
+      color: var(--text-muted);
+      transition: transform 0.15s ease;
+    }
+
+    .lang-picker[data-open="true"] .lang-trigger i {
+      transform: rotate(180deg);
+    }
+
+    .lang-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 100%;
+      list-style: none;
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 4px;
+      box-shadow: 0 16px 32px -12px rgba(0, 0, 0, 0.4);
+      z-index: 30;
+    }
+
+    .lang-menu[hidden] { display: none; }
+
+    .lang-menu li {
+      padding: 8px 12px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .lang-menu li:hover,
+    .lang-menu li[aria-selected="true"] {
+      background: var(--chip-bg);
+      color: var(--accent);
+    }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 64px 24px 96px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+
+    .hero .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+
+    .hero p.tagline {
+      color: var(--text-muted);
+      font-size: 17px;
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-heading h2 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    #topics { margin-top: 8px; }
+
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .topic-card { min-width: 0; }
+
+    @media (max-width: 680px) {
+      .topic-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 32px; }
+      nav .nav-links { display: none; }
+    }
+
+    .topic-card {
       background: var(--card-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
       border-radius: 18px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55), 0 0 35px var(--accent-glow);
-      overflow: hidden;
+      padding: 22px;
+      box-shadow: 0 20px 40px -24px rgba(0, 0, 0, 0.35), 0 0 24px var(--accent-glow);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
 
-    ul#toc {
-      list-style: none;
-    }
-
-    ul#toc li + li {
-      border-top: 1px solid var(--card-border);
-    }
-
-    ul#toc a {
+    .topic-card .topic-title {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 18px 24px;
-      color: var(--text);
-      text-decoration: none;
-      transition: background 0.15s ease;
-    }
-
-    ul#toc a:hover {
-      background: rgba(56, 189, 248, 0.08);
-    }
-
-    ul#toc a:hover .title {
-      color: var(--accent);
-    }
-
-    ul#toc i.icon {
-      color: var(--accent);
+      gap: 10px;
       font-size: 16px;
+      font-weight: 700;
+    }
+
+    .topic-card .topic-title i {
+      color: var(--accent);
       width: 20px;
       text-align: center;
-      flex-shrink: 0;
     }
 
-    .meta { flex: 1; min-width: 0; }
+    .report-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
 
-    .title {
-      font-weight: 600;
-      font-size: 15px;
-      white-space: nowrap;
+    .report-list li + li { border-top: 1px solid var(--card-border); }
+
+    .report-list a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 2px;
+      text-decoration: none;
+      font-size: 14px;
+      color: var(--text);
+      transition: color 0.15s ease;
+    }
+
+    .report-list a:hover { color: var(--accent); }
+
+    .report-list a .r-title {
+      flex: 1;
+      min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .path {
-      font-family: var(--font-mono);
-      font-size: 12px;
+    .report-list i.chevron {
       color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    i.chevron {
-      color: var(--text-muted);
-      font-size: 12px;
+      font-size: 11px;
       flex-shrink: 0;
     }
 
-    .status {
-      padding: 32px 24px;
-      text-align: center;
+    .empty-topic {
+      font-size: 13px;
       color: var(--text-muted);
-      font-size: 14px;
-    }
-
-    .status.error {
-      color: var(--danger);
+      font-style: italic;
+      padding: 4px 2px;
     }
 
     footer {
-      margin-top: 24px;
       text-align: center;
+      padding: 32px 24px 48px;
       color: var(--text-muted);
       font-size: 12px;
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <header>
-      <h1>TWMProgrammer</h1>
-      <p>Index of published pages</p>
-    </header>
-
-    <div class="card">
-      <ul id="toc"></ul>
-      <div class="status" id="status">Loading pages&hellip;</div>
+  <nav>
+    <a class="brand" href="#top"><i class="fa-solid fa-terminal"></i>TWMProgrammer</a>
+    <ul class="nav-links">
+      <li><a href="#top" data-i18n="nav.home">Home</a></li>
+      <li><a href="#topics" data-i18n="nav.topics">Topics</a></li>
+    </ul>
+    <div class="nav-controls">
+      <div class="lang-picker" id="lang-picker">
+        <button class="lang-trigger" id="lang-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Language">
+          <span id="lang-current">EN</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <ul class="lang-menu" id="lang-menu" role="listbox" hidden>
+          <li role="option" data-lang="en">EN</li>
+          <li role="option" data-lang="vi">VI</li>
+          <li role="option" data-lang="fr">FR</li>
+        </ul>
+      </div>
+      <button class="icon-btn" id="theme-toggle" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon" id="theme-icon"></i>
+      </button>
     </div>
+  </nav>
 
-    <footer id="generated"></footer>
-  </div>
+  <main id="top">
+    <section class="hero">
+      <span class="eyebrow" data-i18n="hero.eyebrow">Security &amp; Development</span>
+      <h1 id="hero-title">TWMProgrammer</h1>
+      <p class="tagline" data-i18n="hero.tagline">Security researcher and developer. Writing up hands-on pentesting work, mobile app security research, and build logs &mdash; from first root cause to working proof of concept.</p>
+    </section>
+
+    <section id="topics">
+      <div class="section-heading">
+        <h2 data-i18n="topics.heading">Topics</h2>
+      </div>
+      <div class="topic-grid" id="topic-grid"></div>
+    </section>
+  </main>
+
+  <footer id="generated"></footer>
 
   <script>
-    async function loadManifest() {
-      const list = document.getElementById('toc');
-      const status = document.getElementById('status');
-      const generated = document.getElementById('generated');
+    const TOPICS = [
+      { id: "website", icon: "fa-solid fa-globe", key: "topic.website" },
+      { id: "mobile", icon: "fa-solid fa-mobile-screen-button", key: "topic.mobile" },
+      { id: "cloud", icon: "fa-solid fa-cloud", key: "topic.cloud" },
+      { id: "redteam", icon: "fa-solid fa-user-secret", key: "topic.redteam" },
+      { id: "cve", icon: "fa-solid fa-bug", key: "topic.cve" },
+      { id: "misc", icon: "fa-solid fa-folder-open", key: "topic.misc" }
+    ];
 
-      try {
-        const res = await fetch('manifest.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error('manifest.json not found (status ' + res.status + ')');
-        const data = await res.json();
-        const pages = Array.isArray(data.pages) ? data.pages : [];
+    const I18N = {
+      en: {
+        "nav.home": "Home",
+        "nav.topics": "Topics",
+        "hero.eyebrow": "Security & Development",
+        "hero.tagline": "Security researcher and developer. Writing up hands-on pentesting work, mobile app security research, and build logs — from first root cause to working proof of concept.",
+        "topics.heading": "Topics",
+        "topic.website": "Website",
+        "topic.mobile": "Mobile",
+        "topic.cloud": "Cloud",
+        "topic.redteam": "Red Team",
+        "topic.cve": "CVE Research",
+        "topic.misc": "Tools & Notes",
+        "topic.empty": "Coming soon.",
+        "footer.updated": "Last updated"
+      },
+      vi: {
+        "nav.home": "Trang chủ",
+        "nav.topics": "Chủ đề",
+        "hero.eyebrow": "An ninh mạng & Phát triển",
+        "hero.tagline": "Nhà nghiên cứu an ninh mạng và developer. Ghi lại các bài pentest thực tế, nghiên cứu bảo mật ứng dụng di động, và quá trình xây dựng — từ nguyên nhân gốc rễ đến bằng chứng (PoC) hoạt động được.",
+        "topics.heading": "Chủ đề",
+        "topic.website": "Website",
+        "topic.mobile": "Di động",
+        "topic.cloud": "Cloud",
+        "topic.redteam": "Red Team",
+        "topic.cve": "Nghiên cứu CVE",
+        "topic.misc": "Công cụ & Ghi chú",
+        "topic.empty": "Sắp có.",
+        "footer.updated": "Cập nhật lần cuối"
+      },
+      fr: {
+        "nav.home": "Accueil",
+        "nav.topics": "Sujets",
+        "hero.eyebrow": "Sécurité & Développement",
+        "hero.tagline": "Chercheur en sécurité et développeur. Comptes rendus de tests d'intrusion pratiques, recherche sur la sécurité des applications mobiles et journaux de construction — de la cause première jusqu'à une preuve de concept fonctionnelle.",
+        "topics.heading": "Sujets",
+        "topic.website": "Site web",
+        "topic.mobile": "Mobile",
+        "topic.cloud": "Cloud",
+        "topic.redteam": "Red Team",
+        "topic.cve": "Recherche CVE",
+        "topic.misc": "Outils & Notes",
+        "topic.empty": "Bientôt disponible.",
+        "footer.updated": "Dernière mise à jour"
+      }
+    };
 
-        if (pages.length === 0) {
-          status.textContent = 'No pages found yet.';
-          return;
-        }
+    // ---- Theme ----
+    const root = document.documentElement;
+    const themeToggle = document.getElementById("theme-toggle");
+    const themeIcon = document.getElementById("theme-icon");
 
-        for (const page of pages) {
-          const li = document.createElement('li');
-          const a = document.createElement('a');
-          a.href = page.path;
+    function applyThemeIcon(theme) {
+      const effective = theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      themeIcon.className = effective === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+    }
 
-          const icon = document.createElement('i');
-          icon.className = 'icon fa-solid fa-file-lines';
+    function initTheme() {
+      let stored = null;
+      try { stored = localStorage.getItem("theme"); } catch (e) {}
+      if (stored === "dark" || stored === "light") {
+        root.setAttribute("data-theme", stored);
+      }
+      applyThemeIcon(stored);
+    }
 
-          const meta = document.createElement('div');
-          meta.className = 'meta';
+    themeToggle.addEventListener("click", () => {
+      const current = root.getAttribute("data-theme") ||
+        (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      const next = current === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("theme", next); } catch (e) {}
+      applyThemeIcon(next);
+    });
 
-          const title = document.createElement('div');
-          title.className = 'title';
-          title.textContent = page.title || page.path;
+    initTheme();
 
-          const path = document.createElement('div');
-          path.className = 'path';
-          path.textContent = page.path;
+    // ---- Language ----
+    let currentLang = "en";
 
-          meta.appendChild(title);
-          meta.appendChild(path);
+    const langPicker = document.getElementById("lang-picker");
+    const langTrigger = document.getElementById("lang-trigger");
+    const langCurrent = document.getElementById("lang-current");
+    const langMenu = document.getElementById("lang-menu");
+    const langOptions = Array.from(langMenu.querySelectorAll("li"));
 
-          const chevron = document.createElement('i');
-          chevron.className = 'chevron fa-solid fa-chevron-right';
+    function translate(lang) {
+      const dict = I18N[lang] || I18N.en;
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        const key = el.getAttribute("data-i18n");
+        if (dict[key]) el.textContent = dict[key];
+      });
+      document.querySelectorAll("[data-i18n-key]").forEach((el) => {
+        const key = el.getAttribute("data-i18n-key");
+        if (dict[key]) el.textContent = dict[key];
+      });
+      document.documentElement.lang = lang;
+    }
 
-          a.appendChild(icon);
-          a.appendChild(meta);
-          a.appendChild(chevron);
-          li.appendChild(a);
-          list.appendChild(li);
-        }
+    function setLang(lang, { persist } = { persist: true }) {
+      currentLang = I18N[lang] ? lang : "en";
+      langCurrent.textContent = currentLang.toUpperCase();
+      langOptions.forEach((li) => {
+        li.setAttribute("aria-selected", String(li.dataset.lang === currentLang));
+      });
+      if (persist) {
+        try { localStorage.setItem("lang", currentLang); } catch (e) {}
+      }
+      translate(currentLang);
+    }
 
-        status.remove();
+    function openLangMenu(open) {
+      langMenu.hidden = !open;
+      langPicker.setAttribute("data-open", String(open));
+      langTrigger.setAttribute("aria-expanded", String(open));
+    }
 
+    function initLang() {
+      let stored = null;
+      try { stored = localStorage.getItem("lang"); } catch (e) {}
+      setLang(stored && I18N[stored] ? stored : "en", { persist: false });
+    }
+
+    langTrigger.addEventListener("click", () => {
+      openLangMenu(langMenu.hidden);
+    });
+
+    langOptions.forEach((li) => {
+      li.addEventListener("click", () => {
+        setLang(li.dataset.lang);
+        openLangMenu(false);
+        loadTopics();
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!langPicker.contains(e.target)) openLangMenu(false);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") openLangMenu(false);
+    });
+
+    // ---- Topics / manifest ----
+    async function loadTopics() {
+      const grid = document.getElementById("topic-grid");
+      const generated = document.getElementById("generated");
+      const lang = currentLang || "en";
+      const dict = I18N[lang] || I18N.en;
+
+      let pages = [];
+      let data = window.__MANIFEST__ || null;
+
+      if (!data) {
+        // Fallback for when manifest.js didn't load: fetch manifest.json
+        // (works when served over http(s), but not from a local file:// page).
+        try {
+          const res = await fetch("manifest.json", { cache: "no-store" });
+          if (res.ok) data = await res.json();
+        } catch (e) {}
+      }
+
+      if (data) {
+        pages = Array.isArray(data.pages) ? data.pages : [];
         if (data.generated) {
-          const d = new Date(data.generated);
-          generated.textContent = 'Last updated ' + d.toLocaleString();
+          generated.setAttribute("data-generated", data.generated);
         }
-      } catch (err) {
-        status.textContent = 'Could not load page list: ' + err.message;
-        status.classList.add('error');
+      }
+
+      grid.innerHTML = "";
+
+      for (const topic of TOPICS) {
+        const card = document.createElement("div");
+        card.className = "topic-card";
+
+        const title = document.createElement("div");
+        title.className = "topic-title";
+        const icon = document.createElement("i");
+        icon.className = topic.icon;
+        const label = document.createElement("span");
+        label.setAttribute("data-i18n-key", topic.key);
+        label.textContent = dict[topic.key] || topic.id;
+        title.appendChild(icon);
+        title.appendChild(label);
+        card.appendChild(title);
+
+        const matches = pages.filter((p) => (p.topic || "misc") === topic.id);
+
+        if (matches.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "empty-topic";
+          empty.setAttribute("data-i18n-key", "topic.empty");
+          empty.textContent = dict["topic.empty"];
+          card.appendChild(empty);
+        } else {
+          const list = document.createElement("ul");
+          list.className = "report-list";
+          for (const page of matches) {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = page.path;
+            const t = document.createElement("span");
+            t.className = "r-title";
+            t.textContent = page.title || page.path;
+            const chev = document.createElement("i");
+            chev.className = "chevron fa-solid fa-chevron-right";
+            a.appendChild(t);
+            a.appendChild(chev);
+            li.appendChild(a);
+            list.appendChild(li);
+          }
+          card.appendChild(list);
+        }
+
+        grid.appendChild(card);
+      }
+
+      const genDate = generated.getAttribute("data-generated");
+      if (genDate) {
+        const d = new Date(genDate);
+        generated.textContent = (dict["footer.updated"] || "Last updated") + " " + d.toLocaleString();
       }
     }
 
-    loadManifest();
+    initLang();
+    loadTopics();
   </script>
 </body>
 </html>
